@@ -4,6 +4,10 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 from .models import user_registrated
 from .models import SuperRubric, SubRubric
+from .models import Bb, AdditionalImage
+from django.forms import inlineformset_factory
+from captcha.fields import CaptchaField
+from .models import Comment
 
 
 class ChangeUserInfoForm(forms.ModelForm):
@@ -71,3 +75,30 @@ class SubRubricForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     keyword = forms.CharField(required=False, max_length=20, label='')
+
+
+class BbForm(forms.ModelForm):
+    class Meta:
+        model = Bb
+        fields = '__all__'
+        widgets = {'author': forms.HiddenInput}
+
+
+AIFormSet = inlineformset_factory(Bb, AdditionalImage, fields='__all__')
+
+
+class UserCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        exclude = ('is_active',)
+        widgets = {'bb': forms.HiddenInput}
+
+
+class GuestCommentForm(forms.ModelForm):
+    captcha = CaptchaField(label='Введиде текст с картинки',
+                           error_messages={'invalid': 'Неправильный текст'})
+
+    class Meta:
+        model = Comment
+        exclude = ('is_active',)
+        widgets = {'bb': forms.HiddenInput}

@@ -8,6 +8,10 @@ from django.views.static import serve
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls', namespace='')),
+    path('captcha', include('captcha.urls')),
+    path('', include('main.urls', namespace='')),
+    path('api/', include('api.urls')),
+    path('', include('main.urls', namespace='')),
 ]
 
 if settings.DEBUG:
